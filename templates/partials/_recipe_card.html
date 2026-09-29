@@ -1,0 +1,10 @@
+{# Reusable recipe card. Expects a variable named "recipe" (a row from the recipes table). #}
+<a class="recipe-card" href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">
+  <div class="recipe-card-top">
+    <span class="badge">{{ recipe.category }}</span>
+    {% if recipe.is_favorite %}<span class="fav" title="Favorite">&#9829;</span>{% endif %}
+  </div>
+  <h3>{{ recipe.title }}</h3>
+  <p class="muted">{{ recipe.description }}</p>
+  <p class="recipe-meta">{{ recipe.prep_minutes + recipe.cook_minutes }} min &middot; serves {{ recipe.servings }}</p>
+</a>

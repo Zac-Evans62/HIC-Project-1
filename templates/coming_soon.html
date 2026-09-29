@@ -1,0 +1,11 @@
+#placeholder
+
+{% extends 'base.html' %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+  <div class="empty-state">
+    <h1>{{ page_title }}</h1>
+    <p class="muted">This page is still being built.</p>
+    <a class="btn btn-primary" href="{{ url_for('home') }}">Back to home</a>
+  </div>
+{% endblock %}

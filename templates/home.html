@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  <h1>What's cooking?</h1>
+
+  {# Tonight #}
+  <section class="tonight">
+    {% if tonight %}
+      <div>
+        <p class="muted">Tonight's dinner</p>
+        <h2>{{ tonight.title }}</h2>
+        <p>{{ tonight.description }}</p>
+        <p class="recipe-meta">{{ tonight.prep_minutes + tonight.cook_minutes }} min &middot; serves {{ tonight.servings }}</p>
+      </div>
+      <div class="tonight-actions">
+        <a class="btn btn-primary" href="{{ url_for('cook', recipe_id=tonight.id) }}">Start cooking</a>
+        <a class="btn btn-secondary" href="{{ url_for('recipe_detail', recipe_id=tonight.id) }}">View recipe</a>
+      </div>
+    {% else %}
+      <div>
+        <h2>Nothing planned for tonight</h2>
+        <p>Pick a recipe and add it to today in the meal planner.</p>
+      </div>
+      <div class="tonight-actions">
+        <a class="btn btn-primary" href="{{ url_for('planner') }}">Plan tonight</a>
+      </div>
+    {% endif %}
+  </section>
+
+  {# This week #}
+  <section>
+    <div class="section-head">
+      <h2>This week's dinners</h2>
+      <a href="{{ url_for('planner') }}">Open planner</a>
+    </div>
+    <div class="week">
+      {% for day in week %}
+        <div class="day {{ 'today' if day.is_today }}">
+          <p class="day-label">{{ day.label }} {{ day.day_number }}</p>
+          {% if day.recipe %}
+            <a href="{{ url_for('recipe_detail', recipe_id=day.recipe.id) }}">{{ day.recipe.title }}</a>
+          {% else %}
+            <a class="muted" href="{{ url_for('planner') }}">Add a meal</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# Favorites #}
+  <section>
+    <div class="section-head">
+      <h2>Your favorites</h2>
+      <a href="{{ url_for('recipes') }}">Browse all recipes</a>
+    </div>
+    {% if favorites %}
+      <div class="card-grid">
+        {% for recipe in favorites %}
+          {% include 'partials/_recipe_card.html' %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No favorites yet. Tap the heart on any recipe to save it here.</p>
+    {% endif %}
+  </section>
+
+  {# Quick actions #}
+  <section>
+    <h2>Quick actions</h2>
+    <div class="quick-actions">
+      <a class="btn btn-secondary" href="{{ url_for('recipe_new') }}">Add a recipe</a>
+      <a class="btn btn-secondary" href="{{ url_for('planner') }}">Plan the week</a>
+      <a class="btn btn-secondary" href="{{ url_for('shopping') }}">View shopping list</a>
+    </div>
+  </section>
+{% endblock %}
