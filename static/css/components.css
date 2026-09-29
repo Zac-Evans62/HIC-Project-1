@@ -1,0 +1,44 @@
+/* Reusable pieces: cards, badges, toasts, page sections. */
+
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .75rem; }
+
+/* Recipe card (used on Home, Library, Trash) */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.recipe-card {
+  display: block; padding: 1rem;
+  background: var(--surface); border: 1px solid var(--tan); border-radius: var(--radius);
+  color: var(--text); text-decoration: none;
+}
+.recipe-card:hover { border-color: var(--orange); }
+.recipe-card p { margin: .25rem 0; font-size: .95rem; }
+.recipe-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; }
+.recipe-meta { font-size: .9rem; color: var(--muted); }
+.badge { background: var(--tan); color: var(--text); padding: .1rem .6rem; border-radius: 99px; font-size: .8rem; font-weight: 600; }
+.fav { color: var(--orange); }
+
+/* Tonight banner */
+.tonight {
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: 1.5rem; margin-top: 1.5rem;
+  background: var(--tan); border-radius: var(--radius); border-left: 8px solid var(--orange);
+}
+.tonight h2 { font-size: 1.75rem; }
+.tonight p { margin: .25rem 0; }
+.tonight-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+/* Week strip */
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; }
+.day { background: var(--surface); border: 1px solid var(--tan); border-radius: var(--radius); padding: .6rem; font-size: .9rem; min-height: 90px; }
+.day.today { border: 2px solid var(--orange); }
+.day-label { font-weight: 700; margin: 0 0 .25rem; }
+@media (max-width: 800px) { .week { grid-template-columns: repeat(2, 1fr); } }
+
+.quick-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* Flash messages */
+.toast-area { position: fixed; top: 1rem; right: 1rem; z-index: 50; display: grid; gap: .5rem; }
+.toast { padding: .7rem 1.1rem; border-radius: var(--radius); background: var(--text); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.toast-success { background: #4F6B2A; }
+.toast-error { background: var(--red); }
+
+.empty-state { text-align: center; padding: 4rem 1rem; }
