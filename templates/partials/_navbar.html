@@ -10,6 +10,13 @@
   </nav>
   <div class="nav-actions">
     <a class="btn btn-primary" href="{{ url_for('recipe_new') }}">+ New recipe</a>
-    <a class="btn btn-quiet" href="{{ url_for('login') }}">Log in</a>
+   {% if g.user %}
+  <form method="post" action="{{ url_for('logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="btn btn-quiet">Log out</button>
+      </form>
+    {% else %}
+      <a class="btn btn-quiet" href="{{ url_for('login') }}">Log in</a>
+    {% endif %}
   </div>
 </header>
