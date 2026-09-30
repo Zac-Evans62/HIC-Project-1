@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a recipe{% endblock %}
+
+{% block content %}
+<h1>Add a recipe</h1>
+<p>Save a recipe to your personal recipe book. Fields marked * are required.</p>
+
+{% if errors %}
+<div role="alert" class="recipe-errors">
+  <h2>Please check the following:</h2>
+  <ul>
+    {% for error in errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<form method="post" action="{{ url_for('recipe_new') }}" class="recipe-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+  <fieldset>
+    <legend>Recipe details</legend>
+
+    <label for="title">Recipe name *</label>
+    <input
+      id="title"
+      name="title"
+      type="text"
+      maxlength="100"
+      required
+      value="{{ form.title }}"
+      placeholder="For example, Chicken Pot Pie"
+    >
+
+    <label for="description">Description</label>
+    <textarea
+      id="description"
+      name="description"
+      rows="3"
+      placeholder="A short description of your recipe"
+    >{{ form.description }}</textarea>
+
+    <label for="category">Category *</label>
+    <select id="category" name="category" required>
+      {% for category in categories %}
+      <option
+        value="{{ category }}"
+        {% if form.category == category %}selected{% endif %}
+      >{{ category }}</option>
+      {% endfor %}
+    </select>
+
+    <div class="recipe-number-fields">
+      <div>
+        <label for="prep_minutes">Preparation time (minutes) *</label>
+        <input
+          id="prep_minutes"
+          name="prep_minutes"
+          type="number"
+          min="0"
+          max="10000"
+          step="1"
+          required
+          value="{{ form.prep_minutes }}"
+        >
+      </div>
+
+      <div>
+        <label for="cook_minutes">Cooking time (minutes) *</label>
+        <input
+          id="cook_minutes"
+          name="cook_minutes"
+          type="number"
+          min="0"
+          max="10000"
+          step="1"
+          required
+          value="{{ form.cook_minutes }}"
+        >
+      </div>
+
+      <div>
+        <label for="servings">Servings *</label>
+        <input
+          id="servings"
+          name="servings"
+          type="number"
+          min="1"
+          max="10000"
+          step="1"
+          required
+          value="{{ form.servings }}"
+        >
+      </div>
+    </div>
+
+    <label class="recipe-checkbox">
+      <input
+        type="checkbox"
+        name="is_favorite"
+        {% if form.is_favorite %}checked{% endif %}
+      >
+      Add to my favorites
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Ingredients *</legend>
+    <p>Add at least one ingredient. Quantity and unit are optional.</p>
+    <p>Use decimals for quantities: enter 0.5 for half a cup.</p>
+
+    <div id="ingredient-rows">
+      {% for ingredient in ingredient_rows %}
+      <div class="ingredient-row">
+        <label>
+          Ingredient
+          <input
+            name="ingredient_name"
+            type="text"
+            value="{{ ingredient.name }}"
+            placeholder="Flour"
+          >
+        </label>
+
+        <label>
+          Quantity
+          <input
+            name="ingredient_quantity"
+            type="number"
+            min="0.001"
+            step="any"
+            value="{{ ingredient.quantity }}"
+            placeholder="1.5"
+          >
+        </label>
+
+        <label>
+          Unit
+          <input
+            name="ingredient_unit"
+            type="text"
+            value="{{ ingredient.unit }}"
+            placeholder="cups"
+          >
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button type="button" id="add-ingredient" class="btn btn-secondary">
+      + Add ingredient
+    </button>
+
+    <p id="ingredient-status" role="status"></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Cooking instructions *</legend>
+
+    <label for="steps">Enter one step per line</label>
+    <textarea
+      id="steps"
+      name="steps"
+      rows="7"
+      required
+      placeholder="Preheat the oven to 375°F.
+Mix the ingredients.
+Bake for 30 minutes."
+    >{{ form.steps }}</textarea>
+  </fieldset>
+
+  <div class="quick-actions">
+    <button type="submit" class="btn btn-primary">Save recipe</button>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
+  </div>
+</form>
+
+<template id="ingredient-template">
+  <div class="ingredient-row">
+    <label>
+      Ingredient
+      <input name="ingredient_name" type="text" placeholder="Flour">
+    </label>
+
+    <label>
+      Quantity
+      <input
+        name="ingredient_quantity"
+        type="number"
+        min="0.001"
+        step="any"
+        placeholder="1.5"
+      >
+    </label>
+
+    <label>
+      Unit
+      <input name="ingredient_unit" type="text" placeholder="cups">
+    </label>
+  </div>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const ingredientRows = document.getElementById("ingredient-rows");
+  const ingredientTemplate = document.getElementById("ingredient-template");
+
+  document.getElementById("add-ingredient").addEventListener("click", () => {
+    const row = ingredientTemplate.content.cloneNode(true);
+    ingredientRows.appendChild(row);
+
+    const newRow = ingredientRows.lastElementChild;
+    newRow.querySelector("input").focus();
+
+    document.getElementById("ingredient-status").textContent =
+      "Ingredient row added.";
+  });
+</script>
+{% endblock %}

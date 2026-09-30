@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<a class="btn btn-secondary" href="{{ url_for('recipes') }}">
+  ← Back to recipes
+</a>
+
+<h1>{{ recipe.title }}</h1>
+
+<p>
+  <span class="badge">{{ recipe.category }}</span>
+
+  {% if recipe.is_favorite %}
+  <span class="fav">♥ Favorite</span>
+  {% endif %}
+</p>
+
+{% if recipe.description %}
+<p>{{ recipe.description }}</p>
+{% endif %}
+
+<dl class="recipe-summary">
+  <div>
+    <dt>Preparation</dt>
+    <dd>{{ recipe.prep_minutes }} minutes</dd>
+  </div>
+
+  <div>
+    <dt>Cooking</dt>
+    <dd>{{ recipe.cook_minutes }} minutes</dd>
+  </div>
+
+  <div>
+    <dt>Total time</dt>
+    <dd>{{ recipe.prep_minutes + recipe.cook_minutes }} minutes</dd>
+  </div>
+
+  <div>
+    <dt>Servings</dt>
+    <dd>{{ recipe.servings }}</dd>
+  </div>
+</dl>
+
+<section>
+  <h2>Ingredients</h2>
+
+  {% if ingredients %}
+  <ul class="recipe-ingredients">
+    {% for ingredient in ingredients %}
+    <li>
+      {% if ingredient.quantity is not none %}
+        {{ '%g'|format(ingredient.quantity) }}
+      {% endif %}
+
+      {% if ingredient.unit %}
+        {{ ingredient.unit }}
+      {% endif %}
+
+      {{ ingredient.name }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No ingredients have been added.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Cooking instructions</h2>
+
+  {% if steps %}
+  <ol class="recipe-steps">
+    {% for step in steps %}
+    <li>{{ step.instruction }}</li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p>No cooking instructions have been added.</p>
+  {% endif %}
+</section>
+{% endblock %}

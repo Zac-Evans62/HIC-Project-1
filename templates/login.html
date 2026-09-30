@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<h1>Welcome to PlateWise</h1>
+<p>Log in to your recipe book, or create an account to start planning meals.</p>
+
+{% if error %}
+<p role="alert" class="toast toast-error">{{ error }}</p>
+{% endif %}
+
+<section aria-labelledby="login-heading">
+  <h2 id="login-heading">Log in</h2>
+
+  <form method="post" action="{{ url_for('login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="action" value="login">
+
+    <p>
+      <label for="login-username">Username</label><br>
+      <input
+        id="login-username"
+        name="username"
+        type="text"
+        autocomplete="username"
+        required
+        maxlength="50"
+        value="{{ username if action == 'login' else '' }}"
+      >
+    </p>
+
+    <p>
+      <label for="login-password">Password</label><br>
+      <input
+        id="login-password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        required
+        maxlength="128"
+      >
+    </p>
+
+    <button class="btn btn-primary" type="submit">Log in</button>
+  </form>
+</section>
+
+<section aria-labelledby="register-heading">
+  <h2 id="register-heading">Create an account</h2>
+  <p>Your new account starts with an empty recipe book.</p>
+
+  <form method="post" action="{{ url_for('login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="action" value="register">
+
+    <p>
+      <label for="register-username">Username (3–50 characters)</label><br>
+      <input
+        id="register-username"
+        name="username"
+        type="text"
+        autocomplete="username"
+        required
+        minlength="3"
+        maxlength="50"
+        value="{{ username if action == 'register' else '' }}"
+      >
+    </p>
+
+    <p>
+      <label for="register-password">Password (8–128 characters)</label><br>
+      <input
+        id="register-password"
+        name="password"
+        type="password"
+        autocomplete="new-password"
+        required
+        minlength="8"
+        maxlength="128"
+      >
+    </p>
+
+    <p>
+      <label for="confirm-password">Confirm password</label><br>
+      <input
+        id="confirm-password"
+        name="confirm_password"
+        type="password"
+        autocomplete="new-password"
+        required
+        maxlength="128"
+      >
+    </p>
+
+    <button class="btn btn-primary" type="submit">Create account</button>
+  </form>
+</section>
+{% endblock %}

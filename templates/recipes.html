@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}My recipes{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <h1>My recipes</h1>
+  <a class="btn btn-primary" href="{{ url_for('recipe_new') }}">
+    + Add a recipe
+  </a>
+</div>
+
+<p>Browse your recipe book or search for something to cook.</p>
+
+<form method="get" action="{{ url_for('recipes') }}" class="recipe-filters">
+  <div>
+    <label for="search">Search by recipe name</label>
+    <input
+      id="search"
+      name="search"
+      type="search"
+      value="{{ search }}"
+      placeholder="For example, chicken"
+    >
+  </div>
+
+  <div>
+    <label for="category">Category</label>
+    <select id="category" name="category">
+      <option value="">All categories</option>
+
+      {% for option in categories %}
+      <option
+        value="{{ option }}"
+        {% if category == option %}selected{% endif %}
+      >{{ option }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <label class="filter-checkbox">
+    <input
+      type="checkbox"
+      name="favorites"
+      value="1"
+      {% if favorites_only %}checked{% endif %}
+    >
+    Favorites only
+  </label>
+
+  <button class="btn btn-primary" type="submit">Apply filters</button>
+  <a class="btn btn-secondary" href="{{ url_for('recipes') }}">Clear filters</a>
+</form>
+
+{% if recipes %}
+<p>
+  {{ recipes|length }}
+  {{ 'recipe' if recipes|length == 1 else 'recipes' }} found
+</p>
+
+<div class="card-grid">
+  {% for recipe in recipes %}
+    {% include 'partials/_recipe_card.html' %}
+  {% endfor %}
+</div>
+
+{% elif search or category or favorites_only %}
+<div class="empty-state">
+  <h2>No matching recipes</h2>
+  <p>Try another search or clear your filters.</p>
+  <a class="btn btn-secondary" href="{{ url_for('recipes') }}">
+    Show all recipes
+  </a>
+</div>
+
+{% else %}
+<div class="empty-state">
+  <h2>Your recipe book is empty</h2>
+  <p>Add your first recipe to get started.</p>
+  <a class="btn btn-primary" href="{{ url_for('recipe_new') }}">
+    + Add a recipe
+  </a>
+</div>
+{% endif %}
+{% endblock %}
