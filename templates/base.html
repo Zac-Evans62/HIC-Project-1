@@ -6,6 +6,8 @@
   <title>{% block title %}Home{% endblock %} | PlateWise</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ui.css') }}">
+  {% block head %}{% endblock %}
 </head>
 <body>
   {% include 'partials/_navbar.html' %}
@@ -21,15 +23,35 @@
     {% endif %}
   {% endwith %}
 
+  {# Undo for "Move to Trash": the form is submitted by the Undo button (see script below). #}
+  {% if trash_undo %}
+    <form id="trash-undo-form" method="post" action="{{ url_for('trash_restore', recipe_id=trash_undo.id) }}" hidden>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="next" value="recipe">
+    </form>
+    <noscript>
+      <div class="toast-area" role="status">
+        <div class="toast toast-info">Moved "{{ trash_undo.title }}" to Trash. <a href="{{ url_for('trash') }}">Open Trash</a> to restore it.</div>
+      </div>
+    </noscript>
+  {% endif %}
+
   <main class="page">
     {% block content %}{% endblock %}
   </main>
 
   <footer class="footer">PlateWise: plan it, shop it, cook it.</footer>
 
-  {# Empty for now. Filled in later: shortcuts.js (keyboard shortcuts), ui.js (undo snackbar, modals) #}
+  {# ui.js = toasts, undo snackbar, confirm dialog. shortcuts.js = keyboard shortcuts. #}
   <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
   <script src="{{ url_for('static', filename='js/shortcuts.js') }}"></script>
+  {% if trash_undo %}
+  <script>
+    UI.showUndo({{ ('Moved "' ~ trash_undo.title ~ '" to Trash.')|tojson }}, function () {
+      document.getElementById("trash-undo-form").submit();
+    }, 8000);
+  </script>
+  {% endif %}
   {% block scripts %}{% endblock %}
 </body>
 </html>

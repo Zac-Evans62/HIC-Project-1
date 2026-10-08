@@ -1,11 +1,14 @@
 import os
 from datetime import date, timedelta
 
-from flask import Flask, g, render_template, flash, redirect, request, url_for
+from flask import Flask, abort, g, render_template, flash, redirect, request, url_for
 
 import db
 from db import get_db
 from routes.auth import login_required, register_auth
+from routes.planner import register_planner
+from routes.shopping import register_shopping
+from routes.trash import register_trash
 
 import math
 
@@ -39,6 +42,9 @@ if not os.path.exists(app.config["DATABASE"]):
         db.init_db()
 
 register_auth(app)
+register_planner(app)
+register_shopping(app)
+register_trash(app)
 
 @app.route("/")
 @login_required
@@ -109,11 +115,7 @@ def make_stub(endpoint, url, title):
     view.__name__ = endpoint
     app.add_url_rule(url, endpoint, view)
 
-
-make_stub("planner", "/planner", "Meal planner")
-make_stub("shopping", "/shopping", "Shopping list")
 make_stub("cook", "/cook/<int:recipe_id>", "Cooking mode")
-make_stub("trash", "/trash", "Trash")
 
 @app.route("/recipes/new", methods=["GET", "POST"])
 @login_required

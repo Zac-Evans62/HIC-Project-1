@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping list{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/shopping.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <h1>Shopping list</h1>
+
+  {% if done %}
+  <form
+    method="post"
+    action="{{ url_for('shopping_reset') }}"
+    data-confirm="All {{ done }} checked {{ 'item' if done == 1 else 'items' }} will be unchecked so you can start over."
+    data-confirm-title="Uncheck everything?"
+    data-confirm-button="Uncheck all"
+  >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="week" value="{{ week_start }}">
+    <button type="submit" class="btn btn-secondary">Uncheck all</button>
+  </form>
+  {% endif %}
+</div>
+
+<p>Everything you need for the meals in your <a href="{{ url_for('planner', week=week_start) }}">meal planner</a>. Check items off as you shop.</p>
+
+<div class="week-nav">
+  <a class="btn btn-secondary" id="prev-week"
+     href="{{ url_for('shopping', week=prev_week) }}">&larr; Previous week</a>
+
+  <div class="week-title">
+    <h2>{{ week_label }}</h2>
+    <p class="muted">{{ meal_count }} planned {{ 'meal' if meal_count == 1 else 'meals' }}</p>
+  </div>
+
+  <a class="btn btn-secondary" id="next-week"
+     href="{{ url_for('shopping', week=next_week) }}">Next week &rarr;</a>
+</div>
+
+{% if not is_this_week %}
+<p class="week-return">
+  <a class="btn btn-quiet" id="this-week" href="{{ url_for('shopping') }}">Back to this week</a>
+</p>
+{% endif %}
+
+<div
+  id="shopping"
+  data-csrf="{{ csrf_token }}"
+  data-week="{{ week_start }}"
+  data-add-url="{{ url_for('shopping_add') }}"
+>
+  {% if total %}
+  <div class="shop-status">
+    <p id="shop-summary" aria-live="polite">
+      {% if done == total %}All done! Everything is checked off.{% else %}{{ total - done }} of {{ total }} left to buy{% endif %}
+    </p>
+    <div class="shop-progress" aria-hidden="true"><span id="shop-bar" style="width: {{ percent }}%"></span></div>
+  </div>
+  {% endif %}
+
+  {% if items %}
+  <section>
+    <h2>From your meal plan</h2>
+    <ul class="shop-list">
+      {% for item in items %}
+      <li class="shop-item" id="item-{{ item.id }}">
+        <form method="post" action="{{ url_for('shopping_toggle', item_id=item.id) }}" class="toggle-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input type="checkbox" id="chk-{{ item.id }}" name="checked" value="1" {% if item.checked %}checked{% endif %}>
+          <label for="chk-{{ item.id }}">
+            <span class="item-name">{{ item.name }}</span>
+            {% if item.quantity %}<span class="item-qty">{{ item.quantity }}</span>{% endif %}
+            {% if item.recipes %}<span class="item-sources">For {{ item.recipes|join(', ') }}</span>{% endif %}
+          </label>
+          <noscript><button type="submit" class="btn btn-small btn-secondary">Save</button></noscript>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% elif not extras %}
+  <div class="empty-state">
+    {% if meal_count == 0 %}
+    <h2>No meals planned for this week</h2>
+    <p>Add meals to your planner and the ingredients will show up here.</p>
+    <a class="btn btn-primary" href="{{ url_for('planner', week=week_start) }}">Open the meal planner</a>
+    {% else %}
+    <h2>Nothing to buy</h2>
+    <p>The recipes you planned have no ingredients listed.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% if extras %}
+  <section id="extras-section">
+    <h2>Extra items</h2>
+    <ul class="shop-list" id="extras-list">
+      {% for item in extras %}
+      <li class="shop-item" id="item-{{ item.id }}">
+        <form method="post" action="{{ url_for('shopping_toggle', item_id=item.id) }}" class="toggle-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input type="checkbox" id="chk-{{ item.id }}" name="checked" value="1" {% if item.checked %}checked{% endif %}>
+          <label for="chk-{{ item.id }}">
+            <span class="item-name">{{ item.name }}</span>
+            {% if item.quantity %}<span class="item-qty">{{ item.quantity }}</span>{% endif %}
+          </label>
+          <noscript><button type="submit" class="btn btn-small btn-secondary">Save</button></noscript>
+        </form>
+
+        <form
+          method="post"
+          action="{{ url_for('shopping_remove', item_id=item.id) }}"
+          class="remove-form"
+          data-name="{{ item.name }}"
+          data-quantity="{{ item.quantity or '' }}"
+        >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit" class="btn btn-small btn-remove"
+                  aria-label="Remove {{ item.name }} from your list">Remove</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section>
+    <h2>Add an item</h2>
+    <p class="muted">For anything that isn't in a recipe, like paper towels.</p>
+    <form method="post" action="{{ url_for('shopping_add') }}" class="shop-add">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="week" value="{{ week_start }}">
+
+      <div>
+        <label for="item-name">Item</label>
+        <input id="item-name" name="name" type="text" maxlength="60"
+               value="{{ form.name }}" placeholder="For example, paper towels"
+               {% if error %}aria-invalid="true" aria-describedby="add-error"{% endif %}>
+      </div>
+
+      <div>
+        <label for="item-quantity">Quantity (optional)</label>
+        <input id="item-quantity" name="quantity" type="text" maxlength="30"
+               value="{{ form.quantity }}" placeholder="2 packs">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Add item</button>
+    </form>
+    {% if error %}<p id="add-error" class="field-error" role="alert">{{ error }}</p>{% endif %}
+  </section>
+</div>
+
+<div class="quick-actions shop-footer">
+  <a class="btn btn-secondary" href="{{ url_for('planner', week=week_start) }}">Back to meal planner</a>
+  <a class="btn btn-secondary" href="{{ url_for('recipes') }}">Browse recipes</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/shopping.js') }}"></script>
+{% endblock %}

@@ -3,9 +3,16 @@
 {% block title %}{{ recipe.title }}{% endblock %}
 
 {% block content %}
-<a class="btn btn-secondary" href="{{ url_for('recipes') }}">
-  ← Back to recipes
-</a>
+<div class="quick-actions">
+  <a class="btn btn-secondary" href="{{ url_for('recipes') }}">
+    ← Back to recipes
+  </a>
+
+  <form method="post" action="{{ url_for('recipe_delete', recipe_id=recipe.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="btn btn-danger">Move to Trash</button>
+  </form>
+</div>
 
 <h1>{{ recipe.title }}</h1>
 

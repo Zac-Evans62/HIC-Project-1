@@ -1,0 +1,64 @@
+{# One meal slot. Expects: day (date), slot, slot_meals, recipes, week_start, optional error. #}
+{% set label = day.strftime('%A') ~ ' ' ~ slot %}
+<div
+  class="planner-slot {{ 'filled' if slot_meals else 'empty' }}"
+  id="slot-{{ day.isoformat() }}-{{ slot }}"
+  data-date="{{ day.isoformat() }}"
+  data-slot="{{ slot }}"
+  data-label="{{ label }}"
+>
+  <span class="slot-name">{{ slot|capitalize }}</span>
+
+  {% for meal in slot_meals %}
+  <div class="planned-meal">
+    <a href="{{ url_for('recipe_detail', recipe_id=meal.recipe_id) }}">{{ meal.title }}</a>
+
+    <form
+      method="post"
+      action="{{ url_for('planner_remove', meal_id=meal.id) }}"
+      class="remove-form"
+      data-recipe-id="{{ meal.recipe_id }}"
+      data-title="{{ meal.title }}"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="week" value="{{ week_start }}">
+      <button type="submit" class="btn btn-small btn-remove"
+              aria-label="Remove {{ meal.title }} from {{ label }}">Remove</button>
+    </form>
+  </div>
+  {% else %}
+    {% if recipes %}
+    {% set suggested = recipes|selectattr('category', 'equalto', slot|capitalize)|list %}
+    {% set others = recipes|rejectattr('category', 'equalto', slot|capitalize)|list %}
+    <form method="post" action="{{ url_for('planner_add') }}" class="add-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="plan_date" value="{{ day.isoformat() }}">
+      <input type="hidden" name="meal_slot" value="{{ slot }}">
+      <input type="hidden" name="week" value="{{ week_start }}">
+
+      <label class="visually-hidden" for="pick-{{ day.isoformat() }}-{{ slot }}">
+        Recipe for {{ label }}
+      </label>
+      <select id="pick-{{ day.isoformat() }}-{{ slot }}" name="recipe_id"
+              {% if error %}aria-invalid="true"{% endif %}>
+        <option value="">Choose a recipe</option>
+        {% if suggested %}
+        <optgroup label="Good for {{ slot }}">
+          {% for recipe in suggested %}<option value="{{ recipe.id }}">{{ recipe.title }}</option>{% endfor %}
+        </optgroup>
+        {% endif %}
+        {% if others %}
+        <optgroup label="{{ 'Other recipes' if suggested else 'All recipes' }}">
+          {% for recipe in others %}<option value="{{ recipe.id }}">{{ recipe.title }}</option>{% endfor %}
+        </optgroup>
+        {% endif %}
+      </select>
+      <button type="submit" class="btn btn-secondary btn-small">Add</button>
+    </form>
+    {% else %}
+    <a href="{{ url_for('recipe_new') }}">Add a recipe first</a>
+    {% endif %}
+  {% endfor %}
+
+  {% if error %}<p class="field-error" role="alert">{{ error }}</p>{% endif %}
+</div>

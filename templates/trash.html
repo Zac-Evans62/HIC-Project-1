@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Trash{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trash.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <h1>Trash</h1>
+
+  {% if recipes %}
+  <form
+    method="post"
+    action="{{ url_for('trash_empty') }}"
+    data-confirm="All {{ recipes|length }} {{ 'recipe' if recipes|length == 1 else 'recipes' }} in Trash will be deleted for good, along with their ingredients, steps and any planned meals. This can't be undone."
+    data-confirm-title="Empty Trash?"
+    data-confirm-button="Delete everything"
+    data-confirm-danger
+  >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="btn btn-danger">Empty Trash</button>
+  </form>
+  {% endif %}
+</div>
+
+<p>Deleted recipes wait here until you restore them or delete them for good. Nothing is removed automatically.</p>
+
+{% if recipes %}
+<p>{{ recipes|length }} {{ 'recipe' if recipes|length == 1 else 'recipes' }} in Trash</p>
+
+<div class="card-grid">
+  {% for recipe in recipes %}
+  <article class="trash-card">
+    <div class="recipe-card-top">
+      <span class="badge">{{ recipe.category }}</span>
+      {% if recipe.is_favorite %}<span class="fav" title="Favorite">&#9829;</span>{% endif %}
+    </div>
+
+    <h3>{{ recipe.title }}</h3>
+    {% if recipe.description %}<p class="muted">{{ recipe.description }}</p>{% endif %}
+    <p class="recipe-meta">
+      Deleted {{ recipe.deleted_label }}
+      {% if recipe.planned %}&middot; planned in {{ recipe.planned }} {{ 'meal' if recipe.planned == 1 else 'meals' }}{% endif %}
+    </p>
+
+    <div class="trash-actions">
+      <form method="post" action="{{ url_for('trash_restore', recipe_id=recipe.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="btn btn-primary btn-small"
+                aria-label="Restore {{ recipe.title }}">Restore</button>
+      </form>
+
+      <form
+        method="post"
+        action="{{ url_for('trash_delete', recipe_id=recipe.id) }}"
+        data-confirm="&quot;{{ recipe.title }}&quot; will be deleted for good, along with its ingredients, steps and any planned meals. This can't be undone."
+        data-confirm-title="Delete this recipe forever?"
+        data-confirm-button="Delete forever"
+        data-confirm-danger
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="btn btn-danger btn-small"
+                aria-label="Delete {{ recipe.title }} forever">Delete forever</button>
+      </form>
+    </div>
+
+    {% if recipe.planned %}
+    <p class="muted trash-note">Restoring it also brings back its planned meals.</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state">
+  <h2>Trash is empty</h2>
+  <p>Recipes you delete will wait here, so you can get them back.</p>
+  <a class="btn btn-secondary" href="{{ url_for('recipes') }}">Browse recipes</a>
+</div>
+{% endif %}
+{% endblock %}

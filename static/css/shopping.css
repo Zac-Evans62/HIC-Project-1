@@ -1,0 +1,48 @@
+/* Shopping list page. Uses the color variables from styles.css. */
+.week-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; flex-wrap: wrap; margin: 1.25rem 0 1rem;
+}
+.week-title { text-align: center; flex: 1; min-width: 12rem; }
+.week-title h2, .week-title p { margin: 0; }
+.week-return { margin: 0 0 1rem; text-align: center; }
+
+.btn-small { padding: .25rem .65rem; font-size: .85rem; }
+.btn-remove { background: transparent; color: var(--red); border-color: transparent; }
+.btn-remove:hover { background: #FBE9E7; }
+.field-error { margin: .5rem 0 0; color: var(--red); font-weight: 600; font-size: .9rem; }
+
+.shop-status { margin: 1.25rem 0 0; }
+.shop-status p { margin: 0 0 .4rem; font-weight: 700; }
+.shop-progress { height: 10px; background: var(--tan); border-radius: 99px; overflow: hidden; }
+.shop-progress span { display: block; height: 100%; background: var(--orange); transition: width .25s; }
+
+.shop-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.shop-item {
+  display: flex; justify-content: space-between; align-items: center; gap: .75rem;
+  background: var(--surface); border: 1px solid var(--tan); border-radius: var(--radius);
+  padding: .65rem .85rem;
+}
+.shop-item:has(input:checked) { background: var(--bg); }
+
+.toggle-form { display: flex; align-items: flex-start; gap: .75rem; flex: 1; margin: 0; }
+.toggle-form input[type="checkbox"] {
+  width: 1.3rem; height: 1.3rem; flex: none; margin-top: .1rem;
+  accent-color: var(--orange); cursor: pointer;
+}
+.toggle-form label { flex: 1; cursor: pointer; }
+.item-name { font-weight: 600; }
+.item-qty { margin-left: .5rem; color: var(--muted); }
+.item-sources { display: block; font-size: .85rem; color: var(--muted); }
+.toggle-form input:checked + label { color: var(--muted); }
+.toggle-form input:checked + label .item-name { text-decoration: line-through; }
+
+.shop-add { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-end; }
+.shop-add > div { display: flex; flex-direction: column; gap: .25rem; flex: 1; min-width: 12rem; }
+.shop-add input {
+  padding: .5rem; font: inherit; color: var(--text);
+  background: var(--surface); border: 1px solid var(--tan-dark); border-radius: var(--radius);
+}
+.shop-add input[aria-invalid="true"] { border: 2px solid var(--red); }
+
+.shop-footer { margin-top: 2rem; }

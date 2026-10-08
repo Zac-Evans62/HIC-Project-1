@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Meal planner{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/planner.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <h1>Meal planner</h1>
+
+  <form
+    method="post"
+    action="{{ url_for('planner_repeat') }}"
+    data-confirm="Meals from last week will be copied into this week's empty slots. Meals you have already planned will not change."
+    data-confirm-title="Copy last week's meals?"
+    data-confirm-button="Copy meals"
+  >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="week" value="{{ week_start }}">
+    <button type="submit" class="btn btn-secondary">Copy last week's meals</button>
+  </form>
+</div>
+
+<p>Plan your week here. Your shopping list is built from these meals.</p>
+
+<div class="week-nav">
+  <a class="btn btn-secondary" id="prev-week"
+     href="{{ url_for('planner', week=prev_week) }}">&larr; Previous week</a>
+
+  <div class="week-title">
+    <h2>{{ week_label }}</h2>
+    <p class="muted" id="planner-summary" aria-live="polite">{{ planned }} of {{ total }} meals planned</p>
+  </div>
+
+  <a class="btn btn-secondary" id="next-week"
+     href="{{ url_for('planner', week=next_week) }}">Next week &rarr;</a>
+</div>
+
+{% if not is_this_week %}
+<p class="week-return">
+  <a class="btn btn-quiet" id="this-week" href="{{ url_for('planner') }}">Back to this week</a>
+</p>
+{% endif %}
+
+<div
+  class="planner"
+  id="planner"
+  data-total="{{ total }}"
+  data-week="{{ week_start }}"
+  data-add-url="{{ url_for('planner_add') }}"
+  data-csrf="{{ csrf_token }}"
+>
+  <div class="planner-row planner-head" aria-hidden="true">
+    <span></span>
+    {% for slot in slots %}<span>{{ slot|capitalize }}</span>{% endfor %}
+  </div>
+
+  {% for day in days %}
+  <div class="planner-row">
+    <div class="planner-day {{ 'today' if day == today }}">
+      {{ day.strftime('%A') }}
+      <small>{{ day.strftime('%b') }} {{ day.day }}{% if day == today %}, today{% endif %}</small>
+    </div>
+
+    {% for slot in slots %}
+      {% set slot_meals = plan.get((day.isoformat(), slot), []) %}
+      {% include 'partials/_planner_slot.html' %}
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="quick-actions planner-footer">
+  <a class="btn btn-primary" href="{{ url_for('shopping') }}">View shopping list</a>
+  <a class="btn btn-secondary" href="{{ url_for('recipes') }}">Browse recipes</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/planner.js') }}"></script>
+{% endblock %}

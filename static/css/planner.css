@@ -1,0 +1,53 @@
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.week-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; flex-wrap: wrap; margin: 1.25rem 0 1rem;
+}
+.week-title { text-align: center; flex: 1; min-width: 12rem; }
+.week-title h2, .week-title p { margin: 0; }
+.week-return { margin: 0 0 1rem; text-align: center; }
+
+.planner { display: grid; gap: .5rem; }
+.planner-row { display: grid; grid-template-columns: 110px repeat(3, 1fr); gap: .5rem; }
+.planner-head { font-weight: 700; color: var(--muted); padding: 0 .25rem; }
+
+.planner-day {
+  background: var(--surface); border: 1px solid var(--tan); border-radius: var(--radius);
+  padding: .6rem; font-weight: 700;
+}
+.planner-day small { display: block; font-weight: 400; color: var(--muted); }
+.planner-day.today { border: 2px solid var(--orange); }
+
+.planner-slot {
+  display: flex; flex-direction: column; gap: .4rem;
+  background: var(--surface); border: 1px dashed var(--tan-dark); border-radius: var(--radius);
+  padding: .6rem; min-height: 84px; font-size: .9rem;
+}
+.planner-slot.filled { border: 1px solid var(--tan); border-left: 6px solid var(--orange); }
+.slot-name { display: none; font-weight: 700; color: var(--muted); }
+
+.planned-meal { display: flex; justify-content: space-between; align-items: flex-start; gap: .5rem; }
+.planned-meal a { font-weight: 600; }
+
+.add-form { display: flex; flex-direction: column; gap: .4rem; }
+.add-form select {
+  width: 100%; padding: .4rem; font: inherit; font-size: .9rem; color: var(--text);
+  background: var(--surface); border: 1px solid var(--tan-dark); border-radius: var(--radius);
+}
+.add-form select[aria-invalid="true"] { border: 2px solid var(--red); }
+
+.btn-small { padding: .25rem .65rem; font-size: .85rem; }
+.btn-remove { background: transparent; color: var(--red); border-color: transparent; }
+.btn-remove:hover { background: #FBE9E7; }
+
+.field-error { margin: 0; color: var(--red); font-weight: 600; font-size: .85rem; }
+.planner-footer { margin-top: 1.5rem; }
+
+@media (max-width: 800px) {
+  .planner-head { display: none; }
+  .planner-row { grid-template-columns: 1fr; }
+  .slot-name { display: block; }
+}
