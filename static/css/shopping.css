@@ -1,4 +1,4 @@
-/* Shopping list page. Uses the color variables from styles.css. */
+/* Shopping list page. */
 .week-nav {
   display: flex; align-items: center; justify-content: space-between;
   gap: .75rem; flex-wrap: wrap; margin: 1.25rem 0 1rem;

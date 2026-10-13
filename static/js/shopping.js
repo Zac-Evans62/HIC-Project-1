@@ -1,6 +1,3 @@
-/* Shopping list: check items off, remove extras with undo, and keep the
-   "left to buy" counter live without reloading the page.
-   Without JavaScript the same forms still work as normal page submissions. */
 (function () {
   "use strict";
 

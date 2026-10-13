@@ -106,7 +106,6 @@ def home():
     )
 
 
-# Teammates can replace these with working feature routes.
 def make_stub(endpoint, url, title):
     @login_required
     def view(**kwargs):
@@ -115,6 +114,7 @@ def make_stub(endpoint, url, title):
     view.__name__ = endpoint
     app.add_url_rule(url, endpoint, view)
 
+#unused but everything breaks if I try to remove it, so it lives here now
 make_stub("cook", "/cook/<int:recipe_id>", "Cooking mode")
 
 @app.route("/recipes/new", methods=["GET", "POST"])
@@ -123,7 +123,6 @@ def recipe_new():
     categories = ["Breakfast", "Lunch", "Dinner", "Dessert", "Snack"]
     errors = []
 
-    # Defaults shown when first opening the form.
     form = {
         "title": "",
         "description": "",
@@ -236,7 +235,6 @@ def recipe_new():
         if not errors:
             conn = get_db()
 
-            # Save everything together. If a write fails, all writes roll back.
             with conn:
                 cursor = conn.execute(
                     """
@@ -288,7 +286,6 @@ def recipe_new():
 
             flash(f'Recipe "{form["title"]}" saved.', "success")
 
-            # Return home until the recipe detail page is implemented.
             return redirect(url_for("recipe_detail", recipe_id=recipe_id))
 
     return render_template(

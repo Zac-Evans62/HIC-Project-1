@@ -104,7 +104,6 @@ def sync_week(conn, user_id, monday):
                     "UPDATE shopping_items SET name = ?, quantity = ? WHERE id = ?",
                     (item["name"], text, row["id"])
                 )
-        # Anything left over is no longer in the plan.
         for row in existing.values():
             conn.execute("DELETE FROM shopping_items WHERE id = ?", (row["id"],))
 

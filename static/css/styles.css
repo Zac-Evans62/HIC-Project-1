@@ -6,7 +6,7 @@
   --tan-dark: #C9AE86;
   --orange: #C2611A;      /* primary actions */
   --orange-dark: #9F4C11;
-  --red: #B3261E;         /* destructive actions ONLY (delete, empty trash) */
+  --red: #B3261E;         /*delete, empty trash */
   --text: #3A2A1B;
   --muted: #7A6650;
   --radius: 10px;
@@ -34,13 +34,12 @@ a { color: var(--orange-dark); }
 .page section { margin-top: 2.25rem; }
 .footer { text-align: center; color: var(--muted); padding: 1.5rem; border-top: 1px solid var(--tan); }
 
-/* Keyboard focus is always visible */
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
   outline: 3px solid var(--orange);
   outline-offset: 2px;
 }
 
-/* ---------- Buttons: same shape everywhere (Consistency) ---------- */
+/*Buttons: same shape everywhere*/
 .btn {
   display: inline-block;
   padding: .55rem 1.1rem;
@@ -60,7 +59,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .btn-danger { background: var(--red); color: #fff; }
 .btn-danger:hover { background: #8C1D17; }
 
-/* ---------- Navbar ---------- */
+/* Navbar */
 .navbar {
   display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
   padding: .75rem 1.25rem;

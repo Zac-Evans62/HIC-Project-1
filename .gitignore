@@ -3,3 +3,4 @@ __pycache__/
 platewise.db
 venv/
 .venv/
+instance/

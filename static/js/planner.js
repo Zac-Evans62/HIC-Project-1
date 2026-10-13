@@ -1,6 +1,3 @@
-/* Meal planner: add and remove meals without reloading the page.
-   The server returns the updated HTML for just the slot that changed.
-   Without JavaScript the same forms still work as normal submissions. */
 (function () {
   "use strict";
 
