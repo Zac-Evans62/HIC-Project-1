@@ -1,3 +1,85 @@
+/* PlateWise global styles. Change colors here and the whole app updates. */
+:root {
+  --bg: #FBF6EE;          /* warm off-white page */
+  --surface: #FFFFFF;     /* cards */
+  --tan: #EADBC4;         /* borders, soft fills */
+  --tan-dark: #C9AE86;
+  --orange: #C2611A;      /* primary actions */
+  --orange-dark: #9F4C11;
+  --red: #B3261E;         /*delete, empty trash */
+  --text: #3A2A1B;
+  --muted: #7A6650;
+  --radius: 10px;
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+h1, h2, h3 { line-height: 1.2; margin: 0 0 .5rem; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.1rem; }
+a { color: var(--orange-dark); }
+.muted { color: var(--muted); }
+
+.page { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+.page section { margin-top: 2.25rem; }
+.footer { text-align: center; color: var(--muted); padding: 1.5rem; border-top: 1px solid var(--tan); }
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+
+/*Buttons: same shape everywhere*/
+.btn {
+  display: inline-block;
+  padding: .55rem 1.1rem;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-primary { background: var(--orange); color: #fff; }
+.btn-primary:hover { background: var(--orange-dark); }
+.btn-secondary { background: var(--surface); color: var(--orange-dark); border-color: var(--tan-dark); }
+.btn-secondary:hover { background: var(--tan); }
+.btn-quiet { background: transparent; color: var(--text); }
+.btn-quiet:hover { background: var(--tan); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover { background: #8C1D17; }
+
+/* Navbar */
+.navbar {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: .75rem 1.25rem;
+  background: var(--surface);
+  border-bottom: 2px solid var(--tan);
+}
+.brand { font-size: 1.35rem; font-weight: 800; color: var(--orange); text-decoration: none; }
+.nav-links { display: flex; gap: .25rem; flex-wrap: wrap; flex: 1; }
+.nav-links a {
+  padding: .4rem .8rem; border-radius: var(--radius);
+  color: var(--text); text-decoration: none; font-weight: 500;
+}
+.nav-links a:hover { background: var(--tan); }
+.nav-links a.active { background: var(--tan); font-weight: 700; box-shadow: inset 0 -3px 0 var(--orange); }
+.nav-actions { display: flex; gap: .5rem; }
+
+@media (max-width: 700px) {
+  .nav-links { order: 3; flex-basis: 100%; }
+}
+
 /* Reusable pieces: cards, badges, toasts, page sections. */
 
 .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .75rem; }
@@ -293,3 +375,41 @@
     padding: 1.25rem;
   }
 }
+
+.toast { transition: opacity .3s; }
+.toast.hiding { opacity: 0; }
+
+.snackbar {
+  position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); z-index: 60;
+  display: flex; align-items: center; gap: 1rem; max-width: calc(100vw - 2rem);
+  padding: .7rem 1rem; background: var(--text); color: #fff;
+  border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.snackbar-undo {
+  background: var(--tan); color: var(--text); border: 0; border-radius: var(--radius);
+  padding: .3rem .85rem; font: inherit; font-weight: 700; cursor: pointer;
+}
+.snackbar-undo:hover { background: #fff; }
+.snackbar-close {
+  background: transparent; color: #fff; border: 0; font-size: 1.25rem;
+  line-height: 1; padding: .2rem .4rem; cursor: pointer;
+}
+
+.confirm-dialog {
+  border: 0; border-radius: var(--radius); padding: 1.5rem;
+  width: calc(100% - 2rem); max-width: 26rem;
+  background: var(--surface); color: var(--text); font-family: var(--font);
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+}
+.confirm-dialog::backdrop { background: rgba(58, 42, 27, .55); }
+.confirm-dialog h2 { margin: 0 0 .5rem; }
+.confirm-dialog p { margin: 0 0 1.25rem; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: .5rem; }
+
+/* Toasts hide themselves after a few seconds, even if JavaScript doesn't */
+@keyframes toast-life {
+  0%, 90% { opacity: 1; }
+  100%    { opacity: 0; visibility: hidden; }
+}
+.toast-area .toast { animation: toast-life 5s forwards; }
+.toast-area .toast-error { animation-duration: 8s; }

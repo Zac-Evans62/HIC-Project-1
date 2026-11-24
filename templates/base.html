@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Home{% endblock %} | PlateWise</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/ui.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body>
@@ -44,7 +42,6 @@
 
   {# ui.js = toasts, undo snackbar, confirm dialog. shortcuts.js = keyboard shortcuts. #}
   <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/shortcuts.js') }}"></script>
   {% if trash_undo %}
   <script>
     UI.showUndo({{ ('Moved "' ~ trash_undo.title ~ '" to Trash.')|tojson }}, function () {
